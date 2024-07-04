@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+ 
+        body {
+            font-family: 'Nunito', sans-serif;
+            font-weight: 400;
+            font-size: 100%;
+            background: white;
+        }
+ 
+        *,
+        html {
+            --primaryGradient: linear-gradient(93.12deg, #16c7e7 0.52%, #361163 100%);
+            --secondaryGradient: linear-gradient(268.91deg, #361163 -2.14%, #16c7e7 99.69%);
+            --primaryBoxShadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            --secondaryBoxShadow: 0px -10px 15px rgba(0, 0, 0, 0.1);
+            --primary: #16c7e7;
+        }
+ 
+        .chatbox {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 9999;
+            display: none;
+        }
+ 
+        .chatbox__support {
+            display: flex;
+            flex-direction: column;
+            background: #f9f9f9;
+            width: 350px;
+            height: 550px;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+        }
+ 
+        .chatbox--active {
+            transform: translateY(-40px);
+            z-index: 123456;
+            opacity: 1;
+        }
+ 
+        .chatbox__header {
+            background: var(--primaryGradient);
+            display: flex;
+            flex-direction: row;
+            align-items: left;
+            justify-content: left;
+            padding: 9px 9px;
+            /* Adjusted padding */
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            box-shadow: var(--primaryBoxShadow);
+        }
+ 
+        .chatbox__image--header {
+            margin-right: 10px;
+        }
+ 
+        .chatbox__heading--header {
+            font-size: 1.2rem;
+            color: white;
+        }
+ 
+        .chatbox__description--header {
+            font-size: .9rem;
+            color: white;
+        }
+ 
+        .chatbox__messages {
+            overflow-y: auto;
+            flex: 1;
+            padding: 15px;
+        }
+ 
+        .messages__item {
+            margin-top: 10px;
+            background: #E0E0E0;
+            /* background: #16c7e7; */
+            /* background: #193f91; */
+            padding: 8px 12px;
+            max-width: 70%;
+        }
+        .chatbox__content--header h1{
+            font-size: 30px;
+            font-family: ubuntu;
+        }
+        .chatbox__content--header p{
+            font-size: 15px;
+            font-family: ubuntu;
+        }
+           /* button for the links */
+        .button-style {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background-color: #1daae7;
+    border: none;
+    border-radius: 5px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button-style:hover {
+    background-color: #16c7e7;
+}
+
+ 
+        /* Adjusted CSS for user's message */
+        .messages__item--visitor {
+            margin-top: 10px;
+            background: var(--primary);
+            padding: 8px 12px;
+            max-width: 70%;
+            color: #fff;
+            font-family: ubuntu;
+            /* Set the maximum width of the container */
+            width: fit-content;
+            /* Set width to fit the content */
+            margin-left: auto;
+            /* Push user messages to the left */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+ 
+ 
+        /* Adjusted CSS for chatbot's message */
+        .messages__item--operator {
+            margin-top: 10px;
+            /* background: #E0E0E0; */
+            background: #193f91;
+            color: white;
+            padding: 8px 12px;
+            max-width: 70%;
+            margin-right: auto;
+            font-family: ubuntu;
+            /* Push chatbot messages to the right */
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+        }
+ 
+ 
+        .chatbox__footer {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 7px;
+            /* Adjusted padding */
+            background: var(--secondaryGradient);
+            box-shadow: var(--secondaryBoxShadow);
+            border-bottom-right-radius: 8px;
+            border-bottom-left-radius: 8px;
+            margin-top: 15px;
+            /* Adjusted margin */
+        }
+ 
+        .chatbox__footer input {
+            width: 80%;
+            border: none;
+            padding: 10px 10px;
+            border-radius: 30px;
+            text-align: left;
+        }
+ 
+        .chatbox__send--footer {
+            color: white;
+            font-family: ubuntu;
+            padding: 6px;
+            background: transparent;
+            border: none;
+            outline: none;
+            cursor: pointer;
+        }
+ 
+        .chatbox__button button,
+        .chatbox__button button:focus,
+        .chatbox__button button:visited {
+            padding: 10px;
+            background: white;
+            border: none;
+            outline: none;
+            border-top-left-radius: 50px;
+            border-top-right-radius: 50px;
+            border-bottom-left-radius: 50px;
+            box-shadow: 0px 10px 15px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+ 
+        .close-icon--header {
+            /* corrected */
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            cursor: pointer;
+            background: white;
+            padding: 3px;
+            border-radius: 3px;
+            /* Adjust border radius */
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            display: flex;
+            /* Enable flexbox */
+            align-items: center;
+            /* Center vertically */
+            justify-content: center;
+            /* Center horizontally */
+        }
+ 
+        .chatbox__toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            cursor: pointer;
+        }
+ 
+        .chatbox__toggle img {
+            width: 150px;
+            height: 150px;
+        }
+    </style>
+</head>
+ 
+<body>
+    <div class="container">
+        <div class="chatbox__toggle" onclick="toggleChatbox()">
+            <img src="botAnimation.gif" alt="Chatbot">
+        </div>
+ 
+        <div class="chatbox">
+            <div class="chatbox__support">
+                <div class="chatbox__header">
+                    <div class="chatbox__image--header">
+                        <img src="cuteRobotIcon.jpg" alt="image" height="50px" width="40px">
+                    </div>
+                    <div class="chatbox__content--header">
+                        <h1 class="chatbox__heading--header">Chat Support</h1>
+                        <p class="chatbox__description--header">Freddy is here!</p>
+                    </div>
+                    <span class="close-icon--header" onclick="toggleChatbox()"> <!-- corrected -->
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="15" height="15">
+                            <path fill="none" d="M0 0h24v24H0z" />
+                            <path
+                                d="M18.3 5.71a1 1 0 0 0-1.42 0L12 10.59 7.12 5.71a1 1 0 0 0-1.42 1.42L10.59 12 5.71 16.88a1 1 0 0 0 1.42 1.42L12 13.41l4.88 4.88a1 1 0 0 0 1.42-1.42L13.41 12l4.88-4.88a1 1 0 0 0 0-1.41z" />
+                        </svg>
+                    </span>
+                </div>
+                <div class="chatbox__messages">
+                    <!-- Messages will be inserted here -->
+                </div>
+                <div class="chatbox__footer">
+                    <input type="text" placeholder="Write a message...">
+                    <button class="chatbox__send--footer send__button">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <script>
+        function toggleChatbox() {
+            var chatbox = document.querySelector('.chatbox');
+            chatbox.style.display = chatbox.style.display === 'none' || chatbox.style.display === '' ? 'block' : 'none';
+        }
+       
+        class Chatbox
+{
+    constructor()
+    {
+        this.args = {
+            openButton: document.querySelector('.chatbox__button'),
+            Chatbox: document.querySelector('.chatbox__support'),
+            sendButton: document.querySelector('.send__button')
+        }
+ 
+        this.state = false;
+        this.message = [];
+    }
+            display() {
+                const { Chatbox, sendButton } = this.args;
+                sendButton.addEventListener('click', () => this.onSendButton(Chatbox));
+ 
+                const node = Chatbox.querySelector('input');
+                node.addEventListener("keyup", ({ key }) => {
+                    if (key === "Enter") {
+                        this.onSendButton(Chatbox);
+                    }
+                });
+            }
+ 
+            toggleState(Chatbox) {
+        this.state = !this.state;
+ 
+        //command to either show or hide the box
+        if(this.state) {
+            Chatbox.classList.add('chatbox--active')
+        } else {
+            Chatbox.classList.remove('chatbox--active')
+        }
+    }
+ 
+    onSendButton(Chatbox) {
+    var textField = Chatbox.querySelector('input');
+    let text1 = textField.value
+    if (text1 === "") {
+        return;
+    }
+ 
+    let msg1 = { name: "User", message: text1 }
+    this.message.push(msg1);
+ 
+    fetch('https://api-1-pd6z.onrender.com/chat', {
+        method: 'POST',
+        body: JSON.stringify({ message: text1 }),
+        mode: 'cors',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+    })
+        .then(r => r.json())
+        .then(r => {
+            if (r && r.response) {
+                let msg2 = { name: "Gen Z", message: r.response };
+                this.message.push(msg2);
+                this.updateChatText(Chatbox);
+                textField.value = '';
+                this.scrollToBottom(Chatbox); // Scroll to bottom after updating chat text
+            } else {
+                console.error('Unexpected response format:', r);
+                this.updateChatText(Chatbox);
+                textField.value = '';
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            this.updateChatText(Chatbox);
+            textField.value = '';
+        });
+}
+ 
+scrollToBottom(Chatbox) {
+    const chatmessage = Chatbox.querySelector('.chatbox__messages');
+    chatmessage.scrollTop = chatmessage.scrollHeight - chatmessage.clientHeight;
+}
+ 
+ 
+            updateChatText(Chatbox) {
+    var html = '';
+    this.message.forEach(function(item) {
+        if (item.name === "User") {
+            html += '<div class="messages__item messages__item--visitor">' + item.message + '</div>';
+        } else if (item.name === "Gen Z") { // Adjusted condition for bot's message
+            html += '<div class="messages__item messages__item--operator">' + item.message + '</div>';
+        }
+    });
+ 
+    const chatmessage = Chatbox.querySelector('.chatbox__messages');
+    const isScrolledToBottom = chatmessage.scrollHeight - chatmessage.clientHeight <= chatmessage.scrollTop + 1;
+ 
+    chatmessage.innerHTML = html;
+ 
+    // If already scrolled to bottom or near bottom, keep it scrolled to bottom
+    if (isScrolledToBottom) {
+        chatmessage.scrollTop = chatmessage.scrollHeight - chatmessage.clientHeight;
+    }
+}
+ 
+ 
+        }
+ 
+        const chatbox = new Chatbox();
+        chatbox.display();
+    </script>
+</body>
+</html>
