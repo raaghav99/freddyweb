@@ -102,27 +102,6 @@
             font-size: 15px;
             font-family: ubuntu;
         }
-           /* button for the links */
-        .button-style {
-    display: inline-block;
-    padding: 10px 20px;
-    margin: 10px 0;
-    font-size: 16px;
-    font-weight: 600;
-    color: white;
-    background-color: #1daae7;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    text-decoration: none;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.button-style:hover {
-    background-color: #16c7e7;
-}
-
  
         /* Adjusted CSS for user's message */
         .messages__item--visitor {
@@ -158,7 +137,14 @@
             border-top-right-radius: 20px;
             border-bottom-left-radius: 20px;
         }
- 
+        .messages__item--operator a{
+            text-decoration: none;
+            color: #a3d8e1;
+            /* color: black; */
+        }
+        .messages__item--operator a:hover{
+            color: #f89b9b;
+        }
  
         .chatbox__footer {
             display: flex;
@@ -327,7 +313,7 @@
     let msg1 = { name: "User", message: text1 }
     this.message.push(msg1);
  
-    fetch('https://api-1-pd6z.onrender.com/chat', {
+    fetch('https://t5-chatbot.onrender.com//chat', {
         method: 'POST',
         body: JSON.stringify({ message: text1 }),
         mode: 'cors',
